@@ -1,0 +1,263 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.rigie</groupId>
+  <artifactId>com.rigie.eclipse.maven</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+  <!-- package as war -->
+  <packaging>war</packaging>
+  
+  <!--  
+  <packaging>jar</packaging>
+  -->
+ 
+
+  <name>com.rigie.eclipse.maven</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <java.home>C:\Program Files\Java\jdk-11.0.2\</java.home>
+    
+    <maven.compiler.source>1.7</maven.compiler.source>
+ 	<maven.compiler.target>1.7</maven.compiler.target>
+ 	
+	  <!-- Error: java.lang.NoSuchMethodError: org.apache.tomcat.util.res.StringManager.getManager(Ljava/lang/Class;)Lorg/apache/tomcat/util/res/StringManager -->
+	  <!--  If you're using Spring Boot to compile a war, make sure the version matches your Tomcat version.
+	<properties>
+	    <tomcat.version>8.0.xx</tomcat.version>
+	</properties>
+	 -->
+	  <!--  Fix: -->
+	  <!-- 
+	  Tomcat 8.0 has reached End of Life and should not be used!
+
+		The replacement is Tomcat 8.5 (implementing the same specifications as Tomcat 8.0) or Tomcat 9.0 
+		
+		https://tomcat.apache.org/download-90.cgi
+	   -->
+	  <tomcat.version>9.0</tomcat.version>
+   	
+ 	
+  </properties>
+  
+  
+    <!-- Inherit defaults from Spring Boot -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.4.RELEASE</version>
+    </parent>
+
+
+    <!-- Package as an executable jar -->
+    <build>
+    	<finalName>DeployMavenToTomcat</finalName>
+    
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                
+                <!-- Error when doing Run as Maven goal -->
+                <!--  "Unable to find main class" with Maven on spring-boot project in Eclipse -->
+                <!-- Fix:  -->
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            
+            <!-- maven tomcat plugin -->
+			<plugin> 
+			  <groupId>org.apache.tomcat.maven</groupId> 
+			  <artifactId>tomcat7-maven-plugin</artifactId>
+			    <version>2.2</version>
+			    
+			    <configuration>
+			       <url>http://localhost:8080/manager/text</url>
+			       <path>/DeployMavenToTomcat</path>
+			       <!-- Set update to true to avoid exist war package can not be override error -->
+			       <update>true</update>
+			       
+			       <!-- tomcat 8 -->
+			       <server>tomcat8_vy</server>
+			       
+			       <!-- Because deploy this maven project using plugin in pom so use the manager-script role user. -->
+			       <username>tomcat</username>
+			       <password>tomcat</password>
+
+			    </configuration>
+			 </plugin>   
+			 
+	      	<!-- fix mvn run config error: 
+	      	No compiler is provided in this environment.
+	      	Perhaps you are running on a JRE rather than a JDK -->			 
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<fork>true</fork>
+					<executable>C:\Program Files\Java\jdk-11.0.2\bin\javac</executable>
+				</configuration>
+			</plugin>		
+			
+			<!-- maven-war plugin  -->
+			<!-- https://www.dev2qa.com/how-to-deploy-a-maven-project-to-tomcat-from-eclipse/ -->
+			<plugin>              
+	            <artifactId>maven-war-plugin</artifactId>              
+	            <version>2.3</version>              
+	            <configuration>                
+	                 <failOnMissingWebXml>false</failOnMissingWebXml>              
+	            </configuration>           
+	         </plugin> 	          
+            
+        </plugins>
+    </build>
+
+    <!-- Add Spring repositories -->
+    <!-- (you don't need this if you are using a .RELEASE version) -->
+    <repositories>
+        <repository>
+            <id>spring-snapshots</id>
+            <url>http://repo.spring.io/snapshot</url>
+            <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+        <repository>
+            <id>spring-milestones</id>
+            <url>http://repo.spring.io/milestone</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-snapshots</id>
+            <url>http://repo.spring.io/snapshot</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>spring-milestones</id>
+            <url>http://repo.spring.io/milestone</url>
+        </pluginRepository>
+    </pluginRepositories>  
+  
+   <!--  RELEASE refers to the last non-snapshot release  -->
+   <!--  LATEST refers to the latest released or snapshot -->
+
+    <!-- Add typical dependencies for a web application -->
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>2.5.4</version>
+        </dependency>
+        
+        <!-- Fix unresolved GetMapping in Controller , update to 4.0.3 --> 
+
+        
+        <!-- jpa , crud repository -->
+	    <dependency>    
+	    	<groupId>org.springframework.boot</groupId>    
+	    	<artifactId>spring-boot-starter-data-jpa</artifactId>    
+	    	<version>2.2.2.RELEASE</version>    
+	    </dependency>  
+	    
+	    
+        <!-- MySQL -->
+        <!-- 
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>	  
+         -->  
+        
+        <!-- MariaDB -->
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>2.1.2</version>
+        </dependency>
+	    
+        
+	    <dependency>
+	      <groupId>junit</groupId>
+	      <artifactId>junit</artifactId>
+	      <version>3.8.1</version>
+	      <scope>test</scope>
+	    </dependency>
+	    
+	    
+	    <!--
+			SEVERE: Unable to process Jar entry [module-info.class] from Jar [jar:file:/C:/Users/rigie/eclipse-workspace/com.rigie.eclipse.maven/target/com.rigie.eclipse.maven-0.0.1-SNAPSHOT/WEB-INF/lib/log4j-api-2.10.0.jar!/] for annotations
+org.apache.tomcat.util.bcel.classfile.ClassFormatException: Invalid byte tag in constant pool: 19	
+https://stackoverflow.com/questions/53063324/severe-unable-to-process-jar-entry-module-info-class-in-tomcat-7-java-8   
+
+
+https://stackoverflow.com/questions/23541532/org-apache-tomcat-util-bcel-classfile-classformatexception-invalid-byte-tag-in
+The "offical answer" is that Tomcat 7 runs on Java 8, see http://tomcat.apache.org/whichversion.html ("Java version 6 and later").
+
+However, if annotation scanning is enabled (metadata-complete="true" in web.xml) there are some issues due to BCEL 
+(not able to process the new Java 8 byte codes). You will get exceptions like (at least with Tomcat 7.0.28):
+
+			  --> 
+			
+		<!-- https://stackoverflow.com/questions/6751920/tomcat-7-servlet-3-0-invalid-byte-tag-in-constant-pool/12730059#12730059 -->	  
+        <dependency>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>3.4.4</version>
+        </dependency>			  
+			  
+			  
+	    <!-- for tomcat.version in <properties> -->
+	    <dependency>
+		    <groupId>org.apache.tomcat.embed</groupId>
+		    <artifactId>tomcat-embed-core</artifactId>
+		    <version>8.0.42</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.tomcat.embed</groupId>
+		    <artifactId>tomcat-embed-el</artifactId>
+		    <version>8.0.42</version>
+		</dependency>
+
+	    <dependency>
+		  <groupId>org.apache.tomcat.embed</groupId>
+		  <artifactId>tomcat-embed-websocket</artifactId>
+		  <version>8.0.42</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.tomcat</groupId>
+		    <artifactId>tomcat-annotations-api</artifactId>
+		    <version>8.0.42</version>
+		</dependency>
+		
+        <!-- JSTL -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+        <!-- To compile JSP files -->
+		<dependency>
+		    <groupId>org.apache.tomcat.embed</groupId>
+		    <artifactId>tomcat-embed-jasper</artifactId>
+		    <version>8.5.71</version>
+		    <scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-tomcat</artifactId>
+		    <version>2.4.4</version>
+		    <scope>provided</scope>
+		</dependency>
+		        
+	    
+	  </dependencies>
+	  
+  
+</project>

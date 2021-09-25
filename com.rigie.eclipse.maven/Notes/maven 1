@@ -1,0 +1,204 @@
+To run a maven project on tomcat:
+
+Run/Debug Configurations
+
+Double click maven build, a new configuration will be created
+
+put ${project_loc} for base directory
+
+put tomcat:run for goals
+
+
+
+[INFO] Skipping non-war project
+
+The tomcat:run goal is intended to work with war projects
+
+pom.xml
+
+  <!-- package as war -->
+  <packaging>war</packaging>
+  
+  
+ Build success but http://localhost:8090/manager/text is 404?
+  
+  run-war vs tomcat7:deploy
+  run-war will start tomcat , tomcat7 assumes tomcat is already started
+  
+  fix:
+  clean install tomcat7:run-war
+  
+  
+  get war here:
+  C:\Users\rigie\eclipse-workspace\com.rigie.eclipse.maven\target
+  
+  
+ Just in case is useful to someone, the settings.xml must be on your .m2 folder. You may need to create it.
+ C:\Users\rigie\.m2
+ 
+ settings.xml
+ 
+ https://stackoverflow.com/questions/15410914/tomcatdeploy-cannot-invoke-tomcat-manager-connection-refused
+ https://stackoverflow.com/questions/2941605/sample-settings-xml
+ 
+  <servers>
+		<!-- maven deploy failed cannot invoke tomcat manager ConnectException: Connection refused: connect -->
+		<!-- Tomcat -->
+		<server>
+			<id>tomcatserver</id>
+			<username>tomcat</username>
+			<password>tomcat</password>
+		</server>
+	</servers>
+ 
+  
+socket write error when running maven deploy
+
+https://stackoverflow.com/questions/39003879/socket-write-error-when-i-try-to-deploy-maven-project-to-tomcat
+
+It starts work when I renamed user in tomcat-users.xml from deployer to admin.
+
+D:\Tomcat\apache-tomcat-9.0.53\conf\tomcat-users.xml
+
+<!-- When deploy war to tomcat in maven plugin, the role should be manager-script -->
+<!-- tomcat role is used to deploy maven project to tomcat in eclipse scripts.-->
+<user username="tomcat" password="tomcat" roles="manager-script"/>
+<!-- admin role is used to login tomcat manager GUI. -->
+<user username="admin" password="tomcat" roles="manager-gui"/>
+
+
+
+spring boot app 404s after maven tomcat deploy build successful
+
+http://localhost:8080/manager/html    OK
+
+http://localhost:8080/DeployMavenToTomcat/  404
+
+https://stackoverflow.com/questions/39567434/spring-boot-application-gives-404-when-deployed-to-tomcat-but-works-with-embedde
+
+
+socket write error ??? start tomcat???
+D:\Tomcat\apache-tomcat-9.0.53\conf
+cmd
+startup
+
+FAIL - Deployed application at context path [/DeployMavenToTomcat] but context failed to start
+
+context failed to start ???
+
+  
+  
+[WARNING] Some problems were encountered while building the effective settings
+[WARNING] 'servers.server.id' must be unique but found duplicate server with id tomcatserver @ C:\Users\rigie\.m2\settings.xml
+
+		<!-- maven deploy failed cannot invoke tomcat manager ConnectException: Connection refused: connect -->
+		<!-- Tomcat -->
+		<server>
+			<id>tomcatserver2</id>
+			<username>tomcat</username>
+			<password>tomcat</password>
+		</server>
+		
+		<server>
+			<id>tomcatserver</id>
+			<username>admin</username>
+			<password>tomcat</password>
+		</server>
+		
+		
+Error: no qualifying bean of type ContactRepository		
+		
+https://stackoverflow.com/questions/54692629/no-qualifying-bean-of-type-repository-personrepository-available		
+
+Fix:		
+		
+Move SpringBootServletInitializer to com.rigie.eclipse.maven App.java    above all the rest of the code
+
+[1] Tomcat manager - 
+
+http://localhost:8080/manager/html/
+
+[2] Your app -
+
+http://localhost:8080/DeployMavenToTomcat/
+
+[3] REST urls in your app -
+
+http://localhost:8080/DeployMavenToTomcat/contacts/add	
+
+/add    
+
+Error:
+Whitelabel Error Page
+This application has no explicit mapping for /error, so you are seeing this as a fallback.
+
+https://howtodoinjava.com/spring-boot/spring-boot-jsp-view-example/
+
+
+
+
+
+
+Project directory structure depends on how it was created and the build tool which you are using.
+
+If you create by selecting File -> New ->Dynamic web project in eclipse, then you find the /WebContent directory.
+
+If it is created using Maven, directory strutcure will be /src/main/webapp.
+
+Please go throuh here for more information on Maven project strutcure.
+
+
+
+Tomcat logs: D:\Tomcat\apache-tomcat-9.0.53\logs
+
+cmd
+
+startup
+shutdown
+
+
+
+
+/*	
+	#Note that Spring Boot will map a logical view onto a JSP file inside the folder 
+	#src/main/webapp/WEB-INF/jsp/
+	
+	#Enter url /viewBooks
+
+	#controller
+	#    @GetMapping("/viewBooks")
+	#    public String viewBooks(Model model) {
+	#        model.addAttribute("books", bookService.getBooks());
+	#        return "view-books";
+	#    }	
+	
+	Spring MVC will look for view-books.jsp inside the /WEB-INF/jsp/ directory.
+*/	
+
+
+Error: http://localhost:8080/DeployMavenToTomcat   , build successful , but unable to connect
+
+Fix: remember to start up tomcat
+
+D:\Tomcat\apache-tomcat-9.0.53\bin
+cmd in address bar
+startup
+
+
+
+
+Error: http://localhost:8080/DeployMavenToTomcat/  returns 'hello-world-page' string instead of jsp page
+
+Fix: That's because you are using the annotation @RestController instead of @Controller
+When you annotate a class with RestController, all methods annotated with @RequestMapping assume @ResponseBody semantics 
+by default. In other words, your method #home is serializing the String /webapp/WEB-INF/home.jsp as JSON, 
+instead of mapping its value to a view.
+
+@RestController -> @Controller
+
+
+
+
+
+  
+  

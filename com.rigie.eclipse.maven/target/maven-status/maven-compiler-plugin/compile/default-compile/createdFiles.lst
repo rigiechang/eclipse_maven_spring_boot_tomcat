@@ -1,0 +1,6 @@
+com\rigie\eclipse\maven\model\ContactEntity.class
+com\rigie\eclipse\maven\controller\MainController.class
+com\rigie\eclipse\maven\util\SqlTest.class
+com\rigie\eclipse\maven\config\WebConfig.class
+com\rigie\eclipse\maven\App.class
+com\rigie\eclipse\maven\repository\ContactRepository.class

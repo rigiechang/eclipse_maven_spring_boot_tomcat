@@ -1,0 +1,53 @@
+The main advantage of JPA over JDBC is that, 
+in JPA, data is represented by objects and classes 
+while in JDBC data is represented by tables and records. 
+
+It uses POJO
+
+JPA is an open-source API
+
+some popular JPA implementations frameworks such as Hibernate
+
+Object-Relation Mapping (ORM) tool
+
+JPA: JPA is a Java specification
+
+Hibernate: It is a lightweight, open-source ORM tool. It is a provider of JPA. 
+
+[Install XAMPP]
+
+[Start apache]
+[Start mysql]
+[Start phpMyAdmin]
+
+http://localhost/phpmyadmin/index.php?lang=en
+
+[Create the database]
+[Create user for the table and database]
+
+
+[Configure MySQL]
+Spring Boot auto-configure DataSource if spring-boot-starter-data-jpa is
+in the class-path by reading database configurations defined in the application.properties
+
+
+You will need to add the application.properties file in your classpath.
+
+If you are using Maven or Gradle, you can just put the file under src/main/resources
+
+
+https://spring.io/guides/gs/accessing-data-mysql/
+
+
+[Create a JPA / Hibernate Entity / POJO]
+
+add to com.rigie.eclipse.maven.model package
+
+
+
+
+
+
+
+
+
