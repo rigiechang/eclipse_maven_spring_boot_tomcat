@@ -5,9 +5,12 @@ Import maven project into eclipse
 
 Right click on project -> Run as -> Run Configuration -> MavenTomcat1
 
-[MavenTomcat1]
-Base Directory: ${project_loc}
+[MavenTomcat1] 
+
+Base Directory: ${project_loc} 
+
 Goals: clean install tomcat7:deploy
+
 
 -> Run
  
